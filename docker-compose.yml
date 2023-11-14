@@ -1,0 +1,37 @@
+version: '3.8'
+
+services:
+  web:
+    image: comex_image
+    build:
+      context: .
+    ports:
+      - "3000:3000"
+    volumes:
+      - .:/app
+      - comex_gemset:/usr/local/bundle
+    networks:
+      - comex_net
+    depends_on:
+      - db
+    environment:
+      DATABASE_URL: "postgresql://postgres:password@db:5432/comex_development"
+
+  db:
+    image: postgres:latest
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: comex_development
+    networks:
+      - comex_net
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+networks:
+  comex_net:
+    driver: bridge
+
+volumes:
+  comex_gemset:
+  postgres_data:
